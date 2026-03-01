@@ -1,10 +1,9 @@
 //! Defines a hierarchial `Tree` with subtrees of `Node`.
 
-use crate::helpers::http::PercentDecoded;
+use crate::helpers::http::{Body, PercentDecoded};
 use crate::router::route::Route;
 use crate::router::tree::node::Node;
 use crate::router::tree::segment::{SegmentMapping, SegmentType};
-use hyper::Body;
 use log::trace;
 
 pub mod node;
@@ -56,7 +55,7 @@ impl Tree {
     pub(crate) fn traverse<'a>(
         &'a self,
         req_path_segments: &'a [PercentDecoded],
-    ) -> Option<(&Node, SegmentMapping<'a>, usize)> {
+    ) -> Option<(&'a Node, SegmentMapping<'a>, usize)> {
         trace!(" starting tree traversal");
         self.root.match_node(req_path_segments)
     }
@@ -64,7 +63,7 @@ impl Tree {
 
 #[cfg(test)]
 mod tests {
-    use hyper::{Method, Response, StatusCode};
+    use http::{Method, Response, StatusCode};
 
     use crate::extractor::{NoopPathExtractor, NoopQueryStringExtractor};
     use crate::helpers::http::request::path::RequestPathSegments;
